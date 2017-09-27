@@ -49,6 +49,19 @@ describe('YAML', () => {
     expect(gendiff(beforePath, createPath('empty.yml'))).toBe(allDeletedResult));
 });
 
+describe('INI', () => {
+  const beforePath = createPath('before.ini');
+
+  test('nothing changed', () =>
+    expect(gendiff(beforePath, beforePath)).toBe(nothingChangedResult));
+
+  test('some properties changed', () =>
+    expect(gendiff(beforePath, createPath('after.ini'))).toBe(somethingChangedResult));
+
+  test('all properties deleted', () =>
+    expect(gendiff(beforePath, createPath('empty.ini'))).toBe(allDeletedResult));
+});
+
 describe('Errors', () => {
   test('unknown extention', () => {
     function unknownExtention() {
