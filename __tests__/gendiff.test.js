@@ -1,36 +1,60 @@
 import path from 'path';
 import gendiff from '../src';
 
-test('the same .json', () => {
-  const before = path.join(__dirname, 'files', 'before.json');
-  const result = '{\n' +
-    '  host: hexlet.io\n' +
-    '  timeout: 50\n' +
-    '  proxy: 123.234.53.22\n' +
-    '}';
-  expect(gendiff(before, before)).toBe(result);
+const nothingChangedResult = '{\n' +
+  '  host: hexlet.io\n' +
+  '  timeout: 50\n' +
+  '  proxy: 123.234.53.22\n' +
+  '}';
+
+const somethingChangedResult = '{\n' +
+  '  host: hexlet.io\n' +
+  '  + timeout: 20\n' +
+  '  - timeout: 50\n' +
+  '  - proxy: 123.234.53.22\n' +
+  '  + verbose: true\n' +
+  '}';
+
+const allDeletedResult = '{\n' +
+  '  - host: hexlet.io\n' +
+  '  - timeout: 50\n' +
+  '  - proxy: 123.234.53.22\n' +
+  '}';
+
+const createPath = fileName => path.join(__dirname, 'fixtures', fileName);
+
+describe('JSON', () => {
+  const beforePath = createPath('before.json');
+
+  test('nothing changed', () =>
+    expect(gendiff(beforePath, beforePath)).toBe(nothingChangedResult));
+
+  test('some properties changed', () =>
+    expect(gendiff(beforePath, createPath('after.json'))).toBe(somethingChangedResult));
+
+  test('all properties deleted', () =>
+    expect(gendiff(beforePath, createPath('empty.json'))).toBe(allDeletedResult));
 });
 
-test('after1.json', () => {
-  const before = path.join(__dirname, 'files', 'before.json');
-  const after = path.join(__dirname, 'files', 'after1.json');
-  const result = '{\n' +
-    '  host: hexlet.io\n' +
-    '  + timeout: 20\n' +
-    '  - timeout: 50\n' +
-    '  - proxy: 123.234.53.22\n' +
-    '  + verbose: true\n' +
-    '}';
-  expect(gendiff(before, after)).toBe(result);
+describe('YAML', () => {
+  const beforePath = createPath('before.yml');
+
+  test('nothing changed', () =>
+    expect(gendiff(beforePath, beforePath)).toBe(nothingChangedResult));
+
+  test('some properties changed', () =>
+    expect(gendiff(beforePath, createPath('after.yml'))).toBe(somethingChangedResult));
+
+  test('all properties deleted', () =>
+    expect(gendiff(beforePath, createPath('empty.yml'))).toBe(allDeletedResult));
 });
 
-test('after2.json', () => {
-  const before = path.join(__dirname, 'files', 'before.json');
-  const after = path.join(__dirname, 'files', 'after2.json');
-  const result = '{\n' +
-    '  - host: hexlet.io\n' +
-    '  - timeout: 50\n' +
-    '  - proxy: 123.234.53.22\n' +
-    '}';
-  expect(gendiff(before, after)).toBe(result);
+describe('Errors', () => {
+  test('unknown extention', () => {
+    function unknownExtention() {
+      const errorPath = createPath('unknown.lol');
+      gendiff(errorPath, errorPath);
+    }
+    expect(unknownExtention()).toThrow();
+  });
 });

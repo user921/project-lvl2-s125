@@ -1,12 +1,12 @@
-import fs from 'fs';
+import _ from 'lodash';
+import parse from './parse';
 
 const diff = (firstConfigPath, secondConfigPath) => {
-  const obj1 = JSON.parse(fs.readFileSync(firstConfigPath, 'utf8'));
-  const obj2 = JSON.parse(fs.readFileSync(secondConfigPath, 'utf8'));
+  const obj1 = parse(firstConfigPath);
+  const obj2 = parse(secondConfigPath);
+  const uniqueKeys = _.union(Object.keys(obj1), Object.keys(obj2));
 
-  const keySet = new Set([...Object.keys(obj1), ...Object.keys(obj2)]);
-
-  const res = [...keySet].reduce((acc, key) => {
+  const res = uniqueKeys.reduce((acc, key) => {
     const value1 = obj1[key];
     const value2 = obj2[key];
 

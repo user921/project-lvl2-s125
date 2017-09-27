@@ -1,3 +1,3 @@
-import diff from './lib/diff';
+import diff from './diff';
 
 export default diff;

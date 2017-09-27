@@ -26,7 +26,8 @@
   "homepage": "https://github.com/user921/project-lvl2-s125#readme",
   "dependencies": {
     "commander": "*",
-    "lodash": "*"
+    "lodash": "*",
+    "js-yaml": "*"
   },
   "devDependencies": {
     "babel-cli": "*",

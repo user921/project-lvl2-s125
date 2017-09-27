@@ -2,6 +2,7 @@
 
 env:
   node: true
+  jest/globals: true
 
 parser: babel-eslint
 
