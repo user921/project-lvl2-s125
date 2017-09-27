@@ -64,10 +64,10 @@ describe('INI', () => {
 
 describe('Errors', () => {
   test('unknown extention', () => {
-    function unknownExtention() {
+    const generateError = () => {
       const errorPath = createPath('unknown.lol');
       gendiff(errorPath, errorPath);
-    }
-    expect(unknownExtention()).toThrow();
+    };
+    expect(generateError).toThrow('An unknown file extension!');
   });
 });
