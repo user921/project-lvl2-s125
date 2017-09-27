@@ -1,16 +1,14 @@
-import path from 'path';
-import fs from 'fs';
 import yaml from 'js-yaml';
 import ini from 'ini';
 
-const parse = (filePath) => {
-  switch (path.extname(filePath)) {
+const parse = (fileContent, format) => {
+  switch (format) {
     case '.json':
-      return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      return JSON.parse(fileContent);
     case '.yml':
-      return yaml.safeLoad(fs.readFileSync(filePath, 'utf8')) || {};
+      return yaml.safeLoad(fileContent) || {};
     case '.ini':
-      return ini.parse(fs.readFileSync(filePath, 'utf8'));
+      return ini.parse(fileContent);
     default:
       throw new Error('An unknown file extension!');
   }
