@@ -1,15 +1,7 @@
 import _ from 'lodash';
 
-const createNode = (type, status, key, oldValue, newValue) => {
-  const node = {
-    type,
-    status,
-    key,
-    oldValue,
-    newValue,
-  };
-  return node;
-};
+const createNode = (type, status, key, oldValue, newValue) =>
+  ({ type, status, key, oldValue, newValue });
 
 const isObject = value => typeof value === 'object';
 const isPrimitive = value => typeof value !== 'object' && value !== undefined;
