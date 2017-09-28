@@ -35,6 +35,8 @@
     "babel-core": "*",
     "babel-eslint": "*",
     "babel-preset-env": "*",
+    "babel-jest": "*",
+    "babel-plugin-transform-object-rest-spread": "*",
     "eslint": "*",
     "eslint-config-airbnb-base": "*",
     "eslint-plugin-import": "*",

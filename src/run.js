@@ -3,7 +3,7 @@ import diff from './diff';
 
 const run = () => {
   program
-    .version('0.4.0')
+    .version('0.5.0')
     .arguments('<firstConfig> <secondConfig>')
     .description('Compares two configuration files and shows a difference.')
     .option('-f, --format [type]', 'output format')
