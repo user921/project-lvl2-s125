@@ -15,16 +15,19 @@ const createAST = (oldObject, newObject) => {
 
     if (isObject(oldValue) && isObject(newValue)) {
       return [...acc, createNode(key, 'unchanged', true, createAST(oldValue, newValue), null)];
-    } else if (isPrimitive(oldValue) && isPrimitive(newValue)) {
-      if (oldValue === newValue) {
-        return [...acc, createNode(key, 'unchanged', false, oldValue, null)];
-      }
-      return [...acc, createNode(key, 'updated', false, oldValue, newValue)];
-    } else if (isObject(oldValue) && newValue === undefined) {
+    }
+    if (isPrimitive(oldValue) && isPrimitive(newValue)) {
+      return oldValue === newValue
+        ? [...acc, createNode(key, 'unchanged', false, oldValue, null)]
+        : [...acc, createNode(key, 'updated', false, oldValue, newValue)];
+    }
+    if (isObject(oldValue) && newValue === undefined) {
       return [...acc, createNode(key, 'deleted', true, createAST(oldValue, oldValue), null)];
-    } else if (oldValue === undefined && isObject(newValue)) {
+    }
+    if (oldValue === undefined && isObject(newValue)) {
       return [...acc, createNode(key, 'added', true, null, createAST(newValue, newValue))];
-    } else if (isPrimitive(oldValue) && newValue === undefined) {
+    }
+    if (isPrimitive(oldValue) && newValue === undefined) {
       return [...acc, createNode(key, 'deleted', false, oldValue, null)];
     }
     // if (oldValue === undefined && isPrimitive(newValue))
