@@ -1,60 +1,53 @@
+import _ from 'lodash';
+
 export const createNormalOutput = (ast) => {
   const iter = (arr, indent) => {
-    const result = arr.reduce((acc, node) => {
-      const { type, status, key, oldValue, newValue } = node;
+    const result = arr.map((node) => {
+      const { key, status, hasChildren, oldValue, newValue } = node;
       const newIndent = `${indent}    `;
 
       switch (status) {
         case 'added':
-          if (type === 'object') {
-            return `${acc}${indent}+ ${key}: ${iter(newValue, newIndent)}\n`;
-          }
-          return `${acc}${indent}+ ${key}: ${newValue}\n`;
+          return hasChildren
+            ? [`${indent}+ ${key}: `, iter(newValue, newIndent), '\n']
+            : `${indent}+ ${key}: ${newValue}\n`;
         case 'deleted':
-          if (type === 'object') {
-            return `${acc}${indent}- ${key}: ${iter(oldValue, newIndent)}\n`;
-          }
-          return `${acc}${indent}- ${key}: ${oldValue}\n`;
-        case 'unchanged':
-          if (type === 'object') {
-            return `${acc}${indent}  ${key}: ${iter(oldValue, newIndent)}\n`;
-          }
-          return `${acc}${indent}  ${key}: ${oldValue}\n`;
+          return hasChildren
+            ? [`${indent}- ${key}: `, iter(oldValue, newIndent), '\n']
+            : `${indent}- ${key}: ${oldValue}\n`;
+        case 'updated':
+          return `${indent}+ ${key}: ${newValue}\n${indent}- ${key}: ${oldValue}\n`;
         default:
-          // case 'changed':
-          return `${acc}${indent}+ ${key}: ${newValue}\n${indent}- ${key}: ${oldValue}\n`;
+          return hasChildren
+            ? [`${indent}  ${key}: `, iter(oldValue, newIndent), '\n']
+            : `${indent}  ${key}: ${oldValue}\n`;
       }
-    }, '{\n');
-    return `${result}${indent.slice(2)}}`;
+    });
+    return ['{\n', result, `${indent.slice(2)}`, '}'];
   };
-  return iter(ast, '  ');
+  return _.flattenDeep(iter(ast, '  ')).join('');
 };
 
 export const createPlainOutput = (ast) => {
   const iter = (arr, parent) => {
-    const result = arr.reduce((acc, node) => {
-      const { type, status, key, oldValue, newValue } = node;
-
+    const resultArray = arr.map((node) => {
+      const { key, status, hasChildren, oldValue, newValue } = node;
       switch (status) {
         case 'added':
-          if (type === 'object') {
-            return `${acc}Property '${parent}${key}' was added with complex value\n`;
-          }
-          return `${acc}Property '${parent}${key}' was added with value: '${newValue}'\n`;
+          return hasChildren
+            ? `Property '${parent}${key}' was added with complex value\n`
+            : `Property '${parent}${key}' was added with value: '${newValue}'\n`;
         case 'deleted':
-          return `${acc}Property '${parent}${key}' was removed\n`;
-        case 'unchanged':
-          if (type === 'object') {
-            const newParent = `${parent}${key}.`;
-            return `${acc}${iter(oldValue, newParent)}`;
-          }
-          return acc;
+          return `Property '${parent}${key}' was removed\n`;
+        case 'updated':
+          return `Property '${parent}${key}' was updated. From '${oldValue}' to '${newValue}'\n`;
         default:
-          // case 'changed':
-          return `${acc}Property '${parent}${key}' was updated. From '${oldValue}' to '${newValue}'\n`;
+          return hasChildren
+            ? iter(oldValue, `${parent}${key}.`)
+            : '';
       }
-    }, '');
-    return `${result}`;
+    });
+    return resultArray;
   };
-  return iter(ast, '');
+  return _.flattenDeep(iter(ast, '')).join('');
 };

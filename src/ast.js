@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
-const createNode = (type, status, key, oldValue, newValue) =>
-  ({ type, status, key, oldValue, newValue });
+const createNode = (key, status, hasChildren, oldValue, newValue) =>
+  ({ key, status, hasChildren, oldValue, newValue });
 
 const isObject = value => typeof value === 'object';
 const isPrimitive = value => typeof value !== 'object' && value !== undefined;
@@ -13,25 +13,22 @@ const createAST = (oldObject, newObject) => {
     const oldValue = oldObject[key];
     const newValue = newObject[key];
 
-    let node;
     if (isObject(oldValue) && isObject(newValue)) {
-      node = createNode('object', 'unchanged', key, createAST(oldValue, newValue), null);
+      return [...acc, createNode(key, 'unchanged', true, createAST(oldValue, newValue), null)];
     } else if (isPrimitive(oldValue) && isPrimitive(newValue)) {
       if (oldValue === newValue) {
-        node = createNode('primitive', 'unchanged', key, oldValue, null);
-      } else {
-        node = createNode('primitive', 'changed', key, oldValue, newValue);
+        return [...acc, createNode(key, 'unchanged', false, oldValue, null)];
       }
+      return [...acc, createNode(key, 'updated', false, oldValue, newValue)];
     } else if (isObject(oldValue) && newValue === undefined) {
-      node = createNode('object', 'deleted', key, createAST(oldValue, oldValue), null);
+      return [...acc, createNode(key, 'deleted', true, createAST(oldValue, oldValue), null)];
     } else if (oldValue === undefined && isObject(newValue)) {
-      node = createNode('object', 'added', key, null, createAST(newValue, newValue));
+      return [...acc, createNode(key, 'added', true, null, createAST(newValue, newValue))];
     } else if (isPrimitive(oldValue) && newValue === undefined) {
-      node = createNode('primitive', 'deleted', key, oldValue, null);
-    } else if (oldValue === undefined && isPrimitive(newValue)) {
-      node = createNode('primitive', 'added', key, null, newValue);
+      return [...acc, createNode(key, 'deleted', false, oldValue, null)];
     }
-    return [...acc, node];
+    // if (oldValue === undefined && isPrimitive(newValue))
+    return [...acc, createNode(key, 'added', false, null, newValue)];
   }, []);
 
   return resultArray;
