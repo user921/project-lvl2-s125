@@ -1,13 +1,15 @@
 import path from 'path';
 import gendiff from '../src';
 
-const nothingChangedResult = '{\n' +
+const nothingChangedResult =
+  '{\n' +
   '    host: hexlet.io\n' +
   '    timeout: 50\n' +
   '    proxy: 123.234.53.22\n' +
   '}';
 
-const somethingChangedResult = '{\n' +
+const somethingChangedResult =
+  '{\n' +
   '    host: hexlet.io\n' +
   '  + timeout: 20\n' +
   '  - timeout: 50\n' +
@@ -15,13 +17,15 @@ const somethingChangedResult = '{\n' +
   '  + verbose: true\n' +
   '}';
 
-const allDeletedResult = '{\n' +
+const allDeletedResult =
+  '{\n' +
   '  - host: hexlet.io\n' +
   '  - timeout: 50\n' +
   '  - proxy: 123.234.53.22\n' +
   '}';
 
-const somethingChangedResult2 = '{\n' +
+const somethingChangedResult2 =
+  '{\n' +
   '    common: {\n' +
   '        setting1: Value 1\n' +
   '      - setting2: 200\n' +
@@ -47,6 +51,15 @@ const somethingChangedResult2 = '{\n' +
   '    }\n' +
   '}';
 
+const somethingChangedPlainResult =
+  "Property 'common.setting2' was removed\n" +
+  "Property 'common.setting6' was removed\n" +
+  "Property 'common.setting4' was added with value: 'blah blah'\n" +
+  "Property 'common.setting5' was added with complex value\n" +
+  "Property 'group1.baz' was updated. From 'bas' to 'bars'\n" +
+  "Property 'group2' was removed\n" +
+  "Property 'group3' was added with complex value\n";
+
 describe('JSON', () => {
   const createPath = fileName => path.join(__dirname, 'fixtures', 'json', fileName);
   const beforePath = createPath('before.json');
@@ -60,10 +73,16 @@ describe('JSON', () => {
   test('all properties deleted', () =>
     expect(gendiff(beforePath, createPath('empty.json'))).toBe(allDeletedResult));
 
-  test('some properties changed 2: recursive config', () => {
+  test('some properties changed: recursive config', () => {
     const beforeRecursivePath = createPath('beforeRecursive.json');
     const afterRecursivePath = createPath('afterRecursive.json');
     expect(gendiff(beforeRecursivePath, afterRecursivePath)).toBe(somethingChangedResult2);
+  });
+
+  test('some properties changed: recursive config: plain output', () => {
+    const beforeRecursivePath = createPath('beforeRecursive.json');
+    const afterRecursivePath = createPath('afterRecursive.json');
+    expect(gendiff(beforeRecursivePath, afterRecursivePath, 'plain')).toBe(somethingChangedPlainResult);
   });
 });
 
@@ -80,10 +99,16 @@ describe('YAML', () => {
   test('all properties deleted', () =>
     expect(gendiff(beforePath, createPath('empty.yml'))).toBe(allDeletedResult));
 
-  test('some properties changed 2: recursive config', () => {
+  test('some properties changed: recursive config', () => {
     const beforeRecursivePath = createPath('beforeRecursive.yml');
     const afterRecursivePath = createPath('afterRecursive.yml');
     expect(gendiff(beforeRecursivePath, afterRecursivePath)).toBe(somethingChangedResult2);
+  });
+
+  test('some properties changed: recursive config: plain output', () => {
+    const beforeRecursivePath = createPath('beforeRecursive.yml');
+    const afterRecursivePath = createPath('afterRecursive.yml');
+    expect(gendiff(beforeRecursivePath, afterRecursivePath, 'plain')).toBe(somethingChangedPlainResult);
   });
 });
 
@@ -100,10 +125,16 @@ describe('INI', () => {
   test('all properties deleted', () =>
     expect(gendiff(beforePath, createPath('empty.ini'))).toBe(allDeletedResult));
 
-  test('some properties changed 2: recursive config', () => {
+  test('some properties changed: recursive config', () => {
     const beforeRecursivePath = createPath('beforeRecursive.ini');
     const afterRecursivePath = createPath('afterRecursive.ini');
     expect(gendiff(beforeRecursivePath, afterRecursivePath)).toBe(somethingChangedResult2);
+  });
+
+  test('some properties changed: recursive config: plain output', () => {
+    const beforeRecursivePath = createPath('beforeRecursive.ini');
+    const afterRecursivePath = createPath('afterRecursive.ini');
+    expect(gendiff(beforeRecursivePath, afterRecursivePath, 'plain')).toBe(somethingChangedPlainResult);
   });
 });
 

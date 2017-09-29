@@ -1,16 +1,16 @@
 import program from 'commander';
 import diff from './diff';
 
-const run = () => {
+const runConsoleProgram = () => {
   program
     .version('0.5.0')
     .arguments('<firstConfig> <secondConfig>')
     .description('Compares two configuration files and shows a difference.')
     .option('-f, --format [type]', 'output format')
-    .action((firstConfigPath, secondConfigPath) => {
-      console.log(diff(firstConfigPath, secondConfigPath));
+    .action((firstConfigPath, secondConfigPath, options) => {
+      console.log(diff(firstConfigPath, secondConfigPath, options.format));
     })
     .parse(process.argv);
 };
 
-export default run;
+export default runConsoleProgram;

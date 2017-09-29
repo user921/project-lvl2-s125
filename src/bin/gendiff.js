@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
-import run from '../run';
+import runConsoleProgram from '../cli';
 
-run();
+runConsoleProgram();
