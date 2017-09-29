@@ -148,3 +148,134 @@ describe('Errors', () => {
     expect(generateError).toThrow('An unknown file extension!');
   });
 });
+
+const jsonOutput =
+`[
+  {
+    "type": "object",
+    "status": "unchanged",
+    "key": "common",
+    "oldValue": [
+      {
+        "type": "primitive",
+        "status": "unchanged",
+        "key": "setting1",
+        "oldValue": "Value 1",
+        "newValue": null
+      },
+      {
+        "type": "primitive",
+        "status": "deleted",
+        "key": "setting2",
+        "oldValue": "200",
+        "newValue": null
+      },
+      {
+        "type": "primitive",
+        "status": "unchanged",
+        "key": "setting3",
+        "oldValue": true,
+        "newValue": null
+      },
+      {
+        "type": "object",
+        "status": "deleted",
+        "key": "setting6",
+        "oldValue": [
+          {
+            "type": "primitive",
+            "status": "unchanged",
+            "key": "key",
+            "oldValue": "value",
+            "newValue": null
+          }
+        ],
+        "newValue": null
+      },
+      {
+        "type": "primitive",
+        "status": "added",
+        "key": "setting4",
+        "oldValue": null,
+        "newValue": "blah blah"
+      },
+      {
+        "type": "object",
+        "status": "added",
+        "key": "setting5",
+        "oldValue": null,
+        "newValue": [
+          {
+            "type": "primitive",
+            "status": "unchanged",
+            "key": "key5",
+            "oldValue": "value5",
+            "newValue": null
+          }
+        ]
+      }
+    ],
+    "newValue": null
+  },
+  {
+    "type": "object",
+    "status": "unchanged",
+    "key": "group1",
+    "oldValue": [
+      {
+        "type": "primitive",
+        "status": "changed",
+        "key": "baz",
+        "oldValue": "bas",
+        "newValue": "bars"
+      },
+      {
+        "type": "primitive",
+        "status": "unchanged",
+        "key": "foo",
+        "oldValue": "bar",
+        "newValue": null
+      }
+    ],
+    "newValue": null
+  },
+  {
+    "type": "object",
+    "status": "deleted",
+    "key": "group2",
+    "oldValue": [
+      {
+        "type": "primitive",
+        "status": "unchanged",
+        "key": "abc",
+        "oldValue": "12345",
+        "newValue": null
+      }
+    ],
+    "newValue": null
+  },
+  {
+    "type": "object",
+    "status": "added",
+    "key": "group3",
+    "oldValue": null,
+    "newValue": [
+      {
+        "type": "primitive",
+        "status": "unchanged",
+        "key": "fee",
+        "oldValue": "100500",
+        "newValue": null
+      }
+    ]
+  }
+]`;
+
+describe('JSON output', () => {
+  const createPath = fileName => path.join(__dirname, 'fixtures', 'json', fileName);
+  test('---', () => {
+    const beforeRecursivePath = createPath('beforeRecursive.json');
+    const afterRecursivePath = createPath('afterRecursive.json');
+    expect(gendiff(beforeRecursivePath, afterRecursivePath, 'plain', true)).toBe(jsonOutput);
+  });
+});

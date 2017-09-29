@@ -7,8 +7,9 @@ const runConsoleProgram = () => {
     .arguments('<firstConfig> <secondConfig>')
     .description('Compares two configuration files and shows a difference.')
     .option('-f, --format [type]', 'output format')
+    .option('--json', 'output in json format')
     .action((firstConfigPath, secondConfigPath, options) => {
-      console.log(diff(firstConfigPath, secondConfigPath, options.format));
+      console.log(diff(firstConfigPath, secondConfigPath, options.format, options.json));
     })
     .parse(process.argv);
 };
