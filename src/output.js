@@ -6,21 +6,22 @@ const createNormalOutput = (ast) => {
 
     const result = nodes.map((node) => {
       const { key, status, children, oldValue, newValue } = node;
+      const newN = n + 4;
 
       switch (status) {
         case 'added':
           return children !== undefined
-            ? [`${indent}+ ${key}: `, iter(children.nodes, n + 4), '\n']
+            ? [`${indent}+ ${key}: `, iter(children, newN), '\n']
             : `${indent}+ ${key}: ${newValue}\n`;
         case 'deleted':
           return children !== undefined
-            ? [`${indent}- ${key}: `, iter(children.nodes, n + 4), '\n']
+            ? [`${indent}- ${key}: `, iter(children, newN), '\n']
             : `${indent}- ${key}: ${oldValue}\n`;
         case 'updated':
           return `${indent}+ ${key}: ${newValue}\n${indent}- ${key}: ${oldValue}\n`;
         default:
           return children !== undefined
-            ? [`${indent}  ${key}: `, iter(children.nodes, n + 4), '\n']
+            ? [`${indent}  ${key}: `, iter(children, newN), '\n']
             : `${indent}  ${key}: ${oldValue}\n`;
       }
     });
@@ -28,7 +29,7 @@ const createNormalOutput = (ast) => {
     return ['{\n', result, ' '.repeat(n - 2), '}'];
   };
 
-  return _.flattenDeep(iter(ast.nodes, 2)).join('');
+  return _.flattenDeep(iter(ast, 2)).join('');
 };
 
 const createPlainOutput = (ast) => {
@@ -46,16 +47,16 @@ const createPlainOutput = (ast) => {
           return `Property '${parent}${key}' was updated. From '${oldValue}' to '${newValue}'\n`;
         default:
           return children !== undefined
-            ? iter(children.nodes, `${parent}${key}.`)
+            ? iter(children, `${parent}${key}.`)
             : '';
       }
     });
     return resultArray;
   };
-  return _.flattenDeep(iter(ast.nodes, '')).join('');
+  return _.flattenDeep(iter(ast, '')).join('');
 };
 
-const createJsonOutput = ast => JSON.stringify(ast.nodes, null, '  ');
+const createJsonOutput = ast => JSON.stringify(ast, null, '  ');
 
 const mapper = {
   normal: createNormalOutput,
@@ -63,6 +64,6 @@ const mapper = {
   json: createJsonOutput,
 };
 
-const renderOutput = format => mapper[format];
+const renderOutput = (ast, format) => mapper[format](ast);
 
 export default renderOutput;

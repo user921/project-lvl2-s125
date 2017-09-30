@@ -65,101 +65,89 @@ const jsonOutput =
   {
     "key": "common",
     "status": "unchanged",
-    "children": {
-      "nodes": [
-        {
-          "key": "setting1",
-          "status": "unchanged",
-          "oldValue": "Value 1"
-        },
-        {
-          "key": "setting2",
-          "status": "deleted",
-          "oldValue": "200"
-        },
-        {
-          "key": "setting3",
-          "status": "unchanged",
-          "oldValue": true
-        },
-        {
-          "key": "setting6",
-          "status": "deleted",
-          "children": {
-            "nodes": [
-              {
-                "key": "key",
-                "status": "unchanged",
-                "oldValue": "value"
-              }
-            ]
+    "children": [
+      {
+        "key": "setting1",
+        "status": "unchanged",
+        "oldValue": "Value 1"
+      },
+      {
+        "key": "setting2",
+        "status": "deleted",
+        "oldValue": "200"
+      },
+      {
+        "key": "setting3",
+        "status": "unchanged",
+        "oldValue": true
+      },
+      {
+        "key": "setting6",
+        "status": "deleted",
+        "children": [
+          {
+            "key": "key",
+            "status": "unchanged",
+            "oldValue": "value"
           }
-        },
-        {
-          "key": "setting4",
-          "status": "added",
-          "newValue": "blah blah"
-        },
-        {
-          "key": "setting5",
-          "status": "added",
-          "children": {
-            "nodes": [
-              {
-                "key": "key5",
-                "status": "unchanged",
-                "oldValue": "value5"
-              }
-            ]
+        ]
+      },
+      {
+        "key": "setting4",
+        "status": "added",
+        "newValue": "blah blah"
+      },
+      {
+        "key": "setting5",
+        "status": "added",
+        "children": [
+          {
+            "key": "key5",
+            "status": "unchanged",
+            "oldValue": "value5"
           }
-        }
-      ]
-    }
+        ]
+      }
+    ]
   },
   {
     "key": "group1",
     "status": "unchanged",
-    "children": {
-      "nodes": [
-        {
-          "key": "baz",
-          "status": "updated",
-          "oldValue": "bas",
-          "newValue": "bars"
-        },
-        {
-          "key": "foo",
-          "status": "unchanged",
-          "oldValue": "bar"
-        }
-      ]
-    }
+    "children": [
+      {
+        "key": "baz",
+        "status": "updated",
+        "oldValue": "bas",
+        "newValue": "bars"
+      },
+      {
+        "key": "foo",
+        "status": "unchanged",
+        "oldValue": "bar"
+      }
+    ]
   },
   {
     "key": "group2",
     "status": "deleted",
-    "children": {
-      "nodes": [
-        {
-          "key": "abc",
-          "status": "unchanged",
-          "oldValue": "12345"
-        }
-      ]
-    }
+    "children": [
+      {
+        "key": "abc",
+        "status": "unchanged",
+        "oldValue": "12345"
+      }
+    ]
   },
   {
     "key": "group3",
     "status": "added",
-    "children": {
-      "nodes": [
-        {
-          "key": "fee",
-          "status": "unchanged",
-          "oldValue": "100500"
-        }
-      ]
-    }
+    "children": [
+      {
+        "key": "fee",
+        "status": "unchanged",
+        "oldValue": "100500"
+      }
+    ]
   }
 ]`;
 
