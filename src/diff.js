@@ -2,15 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import parse from './parser';
 import AST from './astClass';
-import { createNormalOutput, createPlainOutput, createJsonOutput } from './output';
-
-const mapping = {
-  normal: createNormalOutput,
-  plain: createPlainOutput,
-  json: createJsonOutput,
-};
-
-const output = format => mapping[format];
+import renderOutput from './output';
 
 const diff = (firstConfigPath, secondConfigPath, format = 'normal') => {
   const firstConfigContent = fs.readFileSync(firstConfigPath, 'utf8');
@@ -21,8 +13,7 @@ const diff = (firstConfigPath, secondConfigPath, format = 'normal') => {
 
   const ast = AST.createFromObjects(obj1, obj2);
 
-  // console.log(output('json')(ast));
-  return output(format)(ast);
+  return renderOutput(format)(ast);
 };
 
 export default diff;

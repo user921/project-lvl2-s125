@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export const createNormalOutput = (ast) => {
+const createNormalOutput = (ast) => {
   const iter = (nodes, indent) => {
     const result = nodes.map((node) => {
       const { key, status, children, oldValue, newValue } = node;
@@ -28,7 +28,7 @@ export const createNormalOutput = (ast) => {
   return _.flattenDeep(iter(ast.nodes, '  ')).join('');
 };
 
-export const createPlainOutput = (ast) => {
+const createPlainOutput = (ast) => {
   const iter = (nodes, parent) => {
     const resultArray = nodes.map((node) => {
       const { key, status, children, oldValue, newValue } = node;
@@ -52,4 +52,14 @@ export const createPlainOutput = (ast) => {
   return _.flattenDeep(iter(ast.nodes, '')).join('');
 };
 
-export const createJsonOutput = ast => JSON.stringify(ast.nodes, null, '  ');
+const createJsonOutput = ast => JSON.stringify(ast.nodes, null, '  ');
+
+const mapping = {
+  normal: createNormalOutput,
+  plain: createPlainOutput,
+  json: createJsonOutput,
+};
+
+const renderOutput = format => mapping[format];
+
+export default renderOutput;
