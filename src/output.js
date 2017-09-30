@@ -1,40 +1,40 @@
 import _ from 'lodash';
 
 export const createNormalOutput = (ast) => {
-  const iter = (arr, indent) => {
-    const result = arr.map((node) => {
-      const { key, status, hasChildren, oldValue, newValue } = node;
+  const iter = (nodes, indent) => {
+    const result = nodes.map((node) => {
+      const { key, status, children, oldValue, newValue } = node;
       const newIndent = `${indent}    `;
 
       switch (status) {
         case 'added':
-          return hasChildren
-            ? [`${indent}+ ${key}: `, iter(newValue, newIndent), '\n']
+          return children !== undefined
+            ? [`${indent}+ ${key}: `, iter(children.nodes, newIndent), '\n']
             : `${indent}+ ${key}: ${newValue}\n`;
         case 'deleted':
-          return hasChildren
-            ? [`${indent}- ${key}: `, iter(oldValue, newIndent), '\n']
+          return children !== undefined
+            ? [`${indent}- ${key}: `, iter(children.nodes, newIndent), '\n']
             : `${indent}- ${key}: ${oldValue}\n`;
         case 'updated':
           return `${indent}+ ${key}: ${newValue}\n${indent}- ${key}: ${oldValue}\n`;
         default:
-          return hasChildren
-            ? [`${indent}  ${key}: `, iter(oldValue, newIndent), '\n']
+          return children !== undefined
+            ? [`${indent}  ${key}: `, iter(children.nodes, newIndent), '\n']
             : `${indent}  ${key}: ${oldValue}\n`;
       }
     });
     return ['{\n', result, `${indent.slice(2)}`, '}'];
   };
-  return _.flattenDeep(iter(ast, '  ')).join('');
+  return _.flattenDeep(iter(ast.nodes, '  ')).join('');
 };
 
 export const createPlainOutput = (ast) => {
-  const iter = (arr, parent) => {
-    const resultArray = arr.map((node) => {
-      const { key, status, hasChildren, oldValue, newValue } = node;
+  const iter = (nodes, parent) => {
+    const resultArray = nodes.map((node) => {
+      const { key, status, children, oldValue, newValue } = node;
       switch (status) {
         case 'added':
-          return hasChildren
+          return children !== undefined
             ? `Property '${parent}${key}' was added with complex value\n`
             : `Property '${parent}${key}' was added with value: '${newValue}'\n`;
         case 'deleted':
@@ -42,12 +42,14 @@ export const createPlainOutput = (ast) => {
         case 'updated':
           return `Property '${parent}${key}' was updated. From '${oldValue}' to '${newValue}'\n`;
         default:
-          return hasChildren
-            ? iter(oldValue, `${parent}${key}.`)
+          return children !== undefined
+            ? iter(children.nodes, `${parent}${key}.`)
             : '';
       }
     });
     return resultArray;
   };
-  return _.flattenDeep(iter(ast, '')).join('');
+  return _.flattenDeep(iter(ast.nodes, '')).join('');
 };
+
+export const createJsonOutput = ast => JSON.stringify(ast.nodes, null, '  ');

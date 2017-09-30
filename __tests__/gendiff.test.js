@@ -65,120 +65,101 @@ const jsonOutput =
   {
     "key": "common",
     "status": "unchanged",
-    "hasChildren": true,
-    "oldValue": [
-      {
-        "key": "setting1",
-        "status": "unchanged",
-        "hasChildren": false,
-        "oldValue": "Value 1",
-        "newValue": null
-      },
-      {
-        "key": "setting2",
-        "status": "deleted",
-        "hasChildren": false,
-        "oldValue": "200",
-        "newValue": null
-      },
-      {
-        "key": "setting3",
-        "status": "unchanged",
-        "hasChildren": false,
-        "oldValue": true,
-        "newValue": null
-      },
-      {
-        "key": "setting6",
-        "status": "deleted",
-        "hasChildren": true,
-        "oldValue": [
-          {
-            "key": "key",
-            "status": "unchanged",
-            "hasChildren": false,
-            "oldValue": "value",
-            "newValue": null
+    "children": {
+      "nodes": [
+        {
+          "key": "setting1",
+          "status": "unchanged",
+          "oldValue": "Value 1"
+        },
+        {
+          "key": "setting2",
+          "status": "deleted",
+          "oldValue": "200"
+        },
+        {
+          "key": "setting3",
+          "status": "unchanged",
+          "oldValue": true
+        },
+        {
+          "key": "setting6",
+          "status": "deleted",
+          "children": {
+            "nodes": [
+              {
+                "key": "key",
+                "status": "unchanged",
+                "oldValue": "value"
+              }
+            ]
           }
-        ],
-        "newValue": null
-      },
-      {
-        "key": "setting4",
-        "status": "added",
-        "hasChildren": false,
-        "oldValue": null,
-        "newValue": "blah blah"
-      },
-      {
-        "key": "setting5",
-        "status": "added",
-        "hasChildren": true,
-        "oldValue": null,
-        "newValue": [
-          {
-            "key": "key5",
-            "status": "unchanged",
-            "hasChildren": false,
-            "oldValue": "value5",
-            "newValue": null
+        },
+        {
+          "key": "setting4",
+          "status": "added",
+          "newValue": "blah blah"
+        },
+        {
+          "key": "setting5",
+          "status": "added",
+          "children": {
+            "nodes": [
+              {
+                "key": "key5",
+                "status": "unchanged",
+                "oldValue": "value5"
+              }
+            ]
           }
-        ]
-      }
-    ],
-    "newValue": null
+        }
+      ]
+    }
   },
   {
     "key": "group1",
     "status": "unchanged",
-    "hasChildren": true,
-    "oldValue": [
-      {
-        "key": "baz",
-        "status": "updated",
-        "hasChildren": false,
-        "oldValue": "bas",
-        "newValue": "bars"
-      },
-      {
-        "key": "foo",
-        "status": "unchanged",
-        "hasChildren": false,
-        "oldValue": "bar",
-        "newValue": null
-      }
-    ],
-    "newValue": null
+    "children": {
+      "nodes": [
+        {
+          "key": "baz",
+          "status": "updated",
+          "oldValue": "bas",
+          "newValue": "bars"
+        },
+        {
+          "key": "foo",
+          "status": "unchanged",
+          "oldValue": "bar"
+        }
+      ]
+    }
   },
   {
     "key": "group2",
     "status": "deleted",
-    "hasChildren": true,
-    "oldValue": [
-      {
-        "key": "abc",
-        "status": "unchanged",
-        "hasChildren": false,
-        "oldValue": "12345",
-        "newValue": null
-      }
-    ],
-    "newValue": null
+    "children": {
+      "nodes": [
+        {
+          "key": "abc",
+          "status": "unchanged",
+          "oldValue": "12345"
+        }
+      ]
+    }
   },
   {
     "key": "group3",
     "status": "added",
-    "hasChildren": true,
-    "oldValue": null,
-    "newValue": [
-      {
-        "key": "fee",
-        "status": "unchanged",
-        "hasChildren": false,
-        "oldValue": "100500",
-        "newValue": null
-      }
-    ]
+    "children": {
+      "nodes": [
+        {
+          "key": "fee",
+          "status": "unchanged",
+          "oldValue": "100500"
+        }
+      ]
+    }
   }
 ]`;
 
