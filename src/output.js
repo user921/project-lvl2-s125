@@ -1,31 +1,34 @@
 import _ from 'lodash';
 
 const createNormalOutput = (ast) => {
-  const iter = (nodes, indent) => {
+  const iter = (nodes, n) => {
+    const indent = ' '.repeat(n);
+
     const result = nodes.map((node) => {
       const { key, status, children, oldValue, newValue } = node;
-      const newIndent = `${indent}    `;
 
       switch (status) {
         case 'added':
           return children !== undefined
-            ? [`${indent}+ ${key}: `, iter(children.nodes, newIndent), '\n']
+            ? [`${indent}+ ${key}: `, iter(children.nodes, n + 4), '\n']
             : `${indent}+ ${key}: ${newValue}\n`;
         case 'deleted':
           return children !== undefined
-            ? [`${indent}- ${key}: `, iter(children.nodes, newIndent), '\n']
+            ? [`${indent}- ${key}: `, iter(children.nodes, n + 4), '\n']
             : `${indent}- ${key}: ${oldValue}\n`;
         case 'updated':
           return `${indent}+ ${key}: ${newValue}\n${indent}- ${key}: ${oldValue}\n`;
         default:
           return children !== undefined
-            ? [`${indent}  ${key}: `, iter(children.nodes, newIndent), '\n']
+            ? [`${indent}  ${key}: `, iter(children.nodes, n + 4), '\n']
             : `${indent}  ${key}: ${oldValue}\n`;
       }
     });
-    return ['{\n', result, `${indent.slice(2)}`, '}'];
+
+    return ['{\n', result, ' '.repeat(n - 2), '}'];
   };
-  return _.flattenDeep(iter(ast.nodes, '  ')).join('');
+
+  return _.flattenDeep(iter(ast.nodes, 2)).join('');
 };
 
 const createPlainOutput = (ast) => {
@@ -54,12 +57,12 @@ const createPlainOutput = (ast) => {
 
 const createJsonOutput = ast => JSON.stringify(ast.nodes, null, '  ');
 
-const mapping = {
+const mapper = {
   normal: createNormalOutput,
   plain: createPlainOutput,
   json: createJsonOutput,
 };
 
-const renderOutput = format => mapping[format];
+const renderOutput = format => mapper[format];
 
 export default renderOutput;
