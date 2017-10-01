@@ -1,28 +1,44 @@
 import _ from 'lodash';
 
+const objectToString = (obj, n) => {
+  const keys = Object.keys(obj);
+  const indent = ' '.repeat(n);
+
+  const stringArray = keys.map((key) => {
+    const newN = n + 4;
+    const value = obj[key];
+
+    return _.isObject(value)
+      ? objectToString(value, newN)
+      : `${indent}  ${key}: ${value}\n`;
+  });
+
+  return ['{\n', stringArray, ' '.repeat(n - 2), '}'];
+};
+
 const createNormalOutput = (ast) => {
   const iter = (nodesArray, n) => {
     const indent = ' '.repeat(n);
 
     const result = nodesArray.map((node) => {
-      const { key, type, status, children, oldValue, newValue } = node;
+      const { key, type, children, oldValue, newValue } = node;
       const newN = n + 4;
 
-      switch (status) {
-        case 'added':
-          return type === 'node'
-            ? [`${indent}+ ${key}: `, iter(children, newN), '\n']
-            : `${indent}+ ${key}: ${newValue}\n`;
-        case 'deleted':
-          return type === 'node'
-            ? [`${indent}- ${key}: `, iter(children, newN), '\n']
-            : `${indent}- ${key}: ${oldValue}\n`;
+      switch (type) {
+        case 'unchanged':
+          return `${indent}  ${key}: ${oldValue}\n`;
         case 'updated':
           return `${indent}+ ${key}: ${newValue}\n${indent}- ${key}: ${oldValue}\n`;
+        case 'deleted':
+          return _.isObject(oldValue)
+            ? [`${indent}- ${key}: `, objectToString(oldValue, newN), '\n']
+            : `${indent}- ${key}: ${oldValue}\n`;
+        case 'added':
+          return _.isObject(newValue)
+            ? [`${indent}+ ${key}: `, objectToString(newValue, newN), '\n']
+            : `${indent}+ ${key}: ${newValue}\n`;
         default:
-          return type === 'node'
-            ? [`${indent}  ${key}: `, iter(children, newN), '\n']
-            : `${indent}  ${key}: ${oldValue}\n`;
+          return [`${indent}  ${key}: `, iter(children, newN), '\n'];
       }
     });
 
@@ -35,20 +51,20 @@ const createNormalOutput = (ast) => {
 const createPlainOutput = (ast) => {
   const iter = (nodesArray, parent) => {
     const resultArray = nodesArray.map((node) => {
-      const { key, type, status, children, oldValue, newValue } = node;
-      switch (status) {
+      const { key, type, children, oldValue, newValue } = node;
+      switch (type) {
+        case 'unchanged':
+          return '';
+        case 'updated':
+          return `Property '${parent}${key}' was updated. From '${oldValue}' to '${newValue}'\n`;
         case 'added':
-          return type === 'node'
+          return _.isObject(newValue)
             ? `Property '${parent}${key}' was added with complex value\n`
             : `Property '${parent}${key}' was added with value: '${newValue}'\n`;
         case 'deleted':
           return `Property '${parent}${key}' was removed\n`;
-        case 'updated':
-          return `Property '${parent}${key}' was updated. From '${oldValue}' to '${newValue}'\n`;
         default:
-          return type === 'node'
-            ? iter(children, `${parent}${key}.`)
-            : '';
+          return iter(children, `${parent}${key}.`);
       }
     });
     return resultArray;

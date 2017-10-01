@@ -12,7 +12,9 @@
     "babel-node": "babel-node",
     "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
     "prepublish": "npm run build",
-    "eslint": "eslint"
+    "eslint": "eslint",
+    "sloc": "sloc --exclude node_module ./",
+    "cloc": "cloc --exclude-dir=$(tr '\n' ',' < .clocignore) ."
   },
   "repository": {
     "type": "git",
@@ -41,6 +43,7 @@
     "eslint-config-airbnb-base": "*",
     "eslint-plugin-import": "*",
     "eslint-plugin-jest": "*",
-    "jest": "*"
+    "jest": "*",
+    "cloc": "*"
   }
 }

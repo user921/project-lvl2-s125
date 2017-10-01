@@ -9,31 +9,25 @@ const createAST = (oldObject, newObject) => {
     const oldValue = oldObject[key];
     const newValue = newObject[key];
 
-    // type: 'node'
-    if (_.isObject(oldValue)) {
-      if (_.isObject(newValue)) {
-        return [...acc, { key, type: 'node', status: 'unchanged', children: createAST(oldValue, newValue) }];
-      }
-      if (_.isUndefined(newValue)) {
-        return [...acc, { key, type: 'node', status: 'deleted', children: createAST(oldValue, oldValue) }];
-      }
-    }
-    if (_.isUndefined(oldValue) && _.isObject(newValue)) {
-      return [...acc, { key, type: 'node', status: 'added', children: createAST(newValue, newValue) }];
-    }
-
-    // type: 'leaf'
     if (isPrimitive(oldValue) && isPrimitive(newValue)) {
       return oldValue === newValue
-        ? [...acc, { key, type: 'leaf', status: 'unchanged', oldValue }]
-        : [...acc, { key, type: 'leaf', status: 'updated', oldValue, newValue }];
+        ? [...acc, { key, type: 'unchanged', oldValue }]
+        : [...acc, { key, type: 'updated', oldValue, newValue }];
+    }
+    if (_.isObject(oldValue) && _.isUndefined(newValue)) {
+      return [...acc, { key, type: 'deleted', oldValue }];
+    }
+    if (isPrimitive(oldValue) && _.isUndefined(newValue)) {
+      return [...acc, { key, type: 'deleted', oldValue }];
+    }
+    if (_.isUndefined(oldValue) && _.isObject(newValue)) {
+      return [...acc, { key, type: 'added', newValue }];
+    }
+    if (_.isUndefined(oldValue) && isPrimitive(newValue)) {
+      return [...acc, { key, type: 'added', newValue }];
     }
 
-    if (isPrimitive(oldValue) && _.isUndefined(newValue)) {
-      return [...acc, { key, type: 'leaf', status: 'deleted', oldValue }];
-    }
-    // if (_.isUndefined(oldValue) && isPrimitive(newValue))
-    return [...acc, { key, type: 'leaf', status: 'added', newValue }];
+    return [...acc, { key, type: 'nested', children: createAST(oldValue, newValue) }];
   }, []);
 
   return tree;
