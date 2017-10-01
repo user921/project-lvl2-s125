@@ -8,6 +8,11 @@ const isAdded = (oldValue, newValue) =>
 const isDeleted = (oldValue, newValue) =>
   ((_.isObject(oldValue) || isPrimitive(oldValue)) && _.isUndefined(newValue));
 
+const isUnchanged = (oldValue, newValue) =>
+  isPrimitive(oldValue) && isPrimitive(newValue) && oldValue === newValue;
+
+const isUpdated = (oldValue, newValue) =>
+  isPrimitive(oldValue) && isPrimitive(newValue) && oldValue !== newValue;
 
 const createAST = (oldObject, newObject) => {
   const uniqueKeys = _.union(Object.keys(oldObject), Object.keys(newObject));
@@ -16,10 +21,11 @@ const createAST = (oldObject, newObject) => {
     const oldValue = oldObject[key];
     const newValue = newObject[key];
 
-    if (isPrimitive(oldValue) && isPrimitive(newValue)) {
-      return oldValue === newValue
-        ? [...acc, { key, type: 'unchanged', oldValue }]
-        : [...acc, { key, type: 'updated', oldValue, newValue }];
+    if (isUnchanged(oldValue, newValue)) {
+      return [...acc, { key, type: 'unchanged', oldValue }];
+    }
+    if (isUpdated(oldValue, newValue)) {
+      return [...acc, { key, type: 'updated', oldValue, newValue }];
     }
     if (isDeleted(oldValue, newValue)) {
       return [...acc, { key, type: 'deleted', oldValue }];
