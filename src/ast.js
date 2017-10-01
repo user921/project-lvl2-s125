@@ -1,8 +1,6 @@
 import _ from 'lodash';
 
-const isObject = value => typeof value === 'object';
-const isPrimitive = value => typeof value !== 'object' && value !== undefined;
-
+const isPrimitive = value => !_.isObject(value) && !_.isUndefined(value);
 
 const createAST = (oldObject, newObject) => {
   const uniqueKeys = _.union(Object.keys(oldObject), Object.keys(newObject));
@@ -11,25 +9,31 @@ const createAST = (oldObject, newObject) => {
     const oldValue = oldObject[key];
     const newValue = newObject[key];
 
-    if (isObject(oldValue) && isObject(newValue)) {
-      return [...acc, { key, status: 'unchanged', children: createAST(oldValue, newValue) }];
+    // type: 'node'
+    if (_.isObject(oldValue)) {
+      if (_.isObject(newValue)) {
+        return [...acc, { key, type: 'node', status: 'unchanged', nodes: createAST(oldValue, newValue) }];
+      }
+      if (_.isUndefined(newValue)) {
+        return [...acc, { key, type: 'node', status: 'deleted', nodes: createAST(oldValue, oldValue) }];
+      }
     }
+    if (_.isUndefined(oldValue) && _.isObject(newValue)) {
+      return [...acc, { key, type: 'node', status: 'added', nodes: createAST(newValue, newValue) }];
+    }
+
+    // type: 'leaf'
     if (isPrimitive(oldValue) && isPrimitive(newValue)) {
       return oldValue === newValue
-        ? [...acc, { key, status: 'unchanged', oldValue }]
-        : [...acc, { key, status: 'updated', oldValue, newValue }];
+        ? [...acc, { key, type: 'leaf', status: 'unchanged', oldValue }]
+        : [...acc, { key, type: 'leaf', status: 'updated', oldValue, newValue }];
     }
-    if (isObject(oldValue) && newValue === undefined) {
-      return [...acc, { key, status: 'deleted', children: createAST(oldValue, oldValue) }];
+
+    if (isPrimitive(oldValue) && _.isUndefined(newValue)) {
+      return [...acc, { key, type: 'leaf', status: 'deleted', oldValue }];
     }
-    if (oldValue === undefined && isObject(newValue)) {
-      return [...acc, { key, status: 'added', children: createAST(newValue, newValue) }];
-    }
-    if (isPrimitive(oldValue) && newValue === undefined) {
-      return [...acc, { key, status: 'deleted', oldValue }];
-    }
-    // if (oldValue === undefined && isPrimitive(newValue))
-    return [...acc, { key, status: 'added', newValue }];
+    // if (_.isUndefined(oldValue) && isPrimitive(newValue))
+    return [...acc, { key, type: 'leaf', status: 'added', newValue }];
   }, []);
 
   return tree;

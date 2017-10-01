@@ -64,29 +64,35 @@ const jsonOutput =
 `[
   {
     "key": "common",
+    "type": "node",
     "status": "unchanged",
-    "children": [
+    "nodes": [
       {
         "key": "setting1",
+        "type": "leaf",
         "status": "unchanged",
         "oldValue": "Value 1"
       },
       {
         "key": "setting2",
+        "type": "leaf",
         "status": "deleted",
         "oldValue": "200"
       },
       {
         "key": "setting3",
+        "type": "leaf",
         "status": "unchanged",
         "oldValue": true
       },
       {
         "key": "setting6",
+        "type": "node",
         "status": "deleted",
-        "children": [
+        "nodes": [
           {
             "key": "key",
+            "type": "leaf",
             "status": "unchanged",
             "oldValue": "value"
           }
@@ -94,15 +100,18 @@ const jsonOutput =
       },
       {
         "key": "setting4",
+        "type": "leaf",
         "status": "added",
         "newValue": "blah blah"
       },
       {
         "key": "setting5",
+        "type": "node",
         "status": "added",
-        "children": [
+        "nodes": [
           {
             "key": "key5",
+            "type": "leaf",
             "status": "unchanged",
             "oldValue": "value5"
           }
@@ -112,16 +121,19 @@ const jsonOutput =
   },
   {
     "key": "group1",
+    "type": "node",
     "status": "unchanged",
-    "children": [
+    "nodes": [
       {
         "key": "baz",
+        "type": "leaf",
         "status": "updated",
         "oldValue": "bas",
         "newValue": "bars"
       },
       {
         "key": "foo",
+        "type": "leaf",
         "status": "unchanged",
         "oldValue": "bar"
       }
@@ -129,10 +141,12 @@ const jsonOutput =
   },
   {
     "key": "group2",
+    "type": "node",
     "status": "deleted",
-    "children": [
+    "nodes": [
       {
         "key": "abc",
+        "type": "leaf",
         "status": "unchanged",
         "oldValue": "12345"
       }
@@ -140,10 +154,12 @@ const jsonOutput =
   },
   {
     "key": "group3",
+    "type": "node",
     "status": "added",
-    "children": [
+    "nodes": [
       {
         "key": "fee",
+        "type": "leaf",
         "status": "unchanged",
         "oldValue": "100500"
       }

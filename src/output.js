@@ -1,27 +1,27 @@
 import _ from 'lodash';
 
 const createNormalOutput = (ast) => {
-  const iter = (nodes, n) => {
+  const iter = (nodesArray, n) => {
     const indent = ' '.repeat(n);
 
-    const result = nodes.map((node) => {
-      const { key, status, children, oldValue, newValue } = node;
+    const result = nodesArray.map((node) => {
+      const { key, type, status, nodes, oldValue, newValue } = node;
       const newN = n + 4;
 
       switch (status) {
         case 'added':
-          return children !== undefined
-            ? [`${indent}+ ${key}: `, iter(children, newN), '\n']
+          return type === 'node'
+            ? [`${indent}+ ${key}: `, iter(nodes, newN), '\n']
             : `${indent}+ ${key}: ${newValue}\n`;
         case 'deleted':
-          return children !== undefined
-            ? [`${indent}- ${key}: `, iter(children, newN), '\n']
+          return type === 'node'
+            ? [`${indent}- ${key}: `, iter(nodes, newN), '\n']
             : `${indent}- ${key}: ${oldValue}\n`;
         case 'updated':
           return `${indent}+ ${key}: ${newValue}\n${indent}- ${key}: ${oldValue}\n`;
         default:
-          return children !== undefined
-            ? [`${indent}  ${key}: `, iter(children, newN), '\n']
+          return type === 'node'
+            ? [`${indent}  ${key}: `, iter(nodes, newN), '\n']
             : `${indent}  ${key}: ${oldValue}\n`;
       }
     });
@@ -33,12 +33,12 @@ const createNormalOutput = (ast) => {
 };
 
 const createPlainOutput = (ast) => {
-  const iter = (nodes, parent) => {
-    const resultArray = nodes.map((node) => {
-      const { key, status, children, oldValue, newValue } = node;
+  const iter = (nodesArray, parent) => {
+    const resultArray = nodesArray.map((node) => {
+      const { key, type, status, nodes, oldValue, newValue } = node;
       switch (status) {
         case 'added':
-          return children !== undefined
+          return type === 'node'
             ? `Property '${parent}${key}' was added with complex value\n`
             : `Property '${parent}${key}' was added with value: '${newValue}'\n`;
         case 'deleted':
@@ -46,8 +46,8 @@ const createPlainOutput = (ast) => {
         case 'updated':
           return `Property '${parent}${key}' was updated. From '${oldValue}' to '${newValue}'\n`;
         default:
-          return children !== undefined
-            ? iter(children, `${parent}${key}.`)
+          return type === 'node'
+            ? iter(nodes, `${parent}${key}.`)
             : '';
       }
     });
