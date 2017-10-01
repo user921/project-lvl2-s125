@@ -1,16 +1,20 @@
 import _ from 'lodash';
 
-const objectToString = (obj, n) => {
+const stringifyValue = (value, n) => {
+  if (!_.isObject(value)) {
+    return value;
+  }
+  const obj = value;
   const keys = Object.keys(obj);
   const indent = ' '.repeat(n);
 
   const stringArray = keys.map((key) => {
     const newN = n + 4;
-    const value = obj[key];
+    const valueForKey = obj[key];
 
-    return _.isObject(value)
-      ? objectToString(value, newN)
-      : `${indent}  ${key}: ${value}\n`;
+    return _.isObject(valueForKey)
+      ? stringifyValue(valueForKey, newN)
+      : `${indent}  ${key}: ${valueForKey}\n`;
   });
 
   return ['{\n', stringArray, ' '.repeat(n - 2), '}'];
@@ -28,15 +32,11 @@ const createNormalOutput = (ast) => {
         case 'unchanged':
           return `${indent}  ${key}: ${oldValue}\n`;
         case 'updated':
-          return `${indent}+ ${key}: ${newValue}\n${indent}- ${key}: ${oldValue}\n`;
+          return [`${indent}+ ${key}: ${newValue}\n`, `${indent}- ${key}: ${oldValue}\n`];
         case 'deleted':
-          return _.isObject(oldValue)
-            ? [`${indent}- ${key}: `, objectToString(oldValue, newN), '\n']
-            : `${indent}- ${key}: ${oldValue}\n`;
+          return [`${indent}- ${key}: `, stringifyValue(oldValue, newN), '\n'];
         case 'added':
-          return _.isObject(newValue)
-            ? [`${indent}+ ${key}: `, objectToString(newValue, newN), '\n']
-            : `${indent}+ ${key}: ${newValue}\n`;
+          return [`${indent}+ ${key}: `, stringifyValue(newValue, newN), '\n'];
         default:
           return [`${indent}  ${key}: `, iter(children, newN), '\n'];
       }
