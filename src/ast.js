@@ -12,14 +12,14 @@ const createAST = (oldObject, newObject) => {
     // type: 'node'
     if (_.isObject(oldValue)) {
       if (_.isObject(newValue)) {
-        return [...acc, { key, type: 'node', status: 'unchanged', nodes: createAST(oldValue, newValue) }];
+        return [...acc, { key, type: 'node', status: 'unchanged', children: createAST(oldValue, newValue) }];
       }
       if (_.isUndefined(newValue)) {
-        return [...acc, { key, type: 'node', status: 'deleted', nodes: createAST(oldValue, oldValue) }];
+        return [...acc, { key, type: 'node', status: 'deleted', children: createAST(oldValue, oldValue) }];
       }
     }
     if (_.isUndefined(oldValue) && _.isObject(newValue)) {
-      return [...acc, { key, type: 'node', status: 'added', nodes: createAST(newValue, newValue) }];
+      return [...acc, { key, type: 'node', status: 'added', children: createAST(newValue, newValue) }];
     }
 
     // type: 'leaf'

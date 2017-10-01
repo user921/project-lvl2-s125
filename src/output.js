@@ -5,23 +5,23 @@ const createNormalOutput = (ast) => {
     const indent = ' '.repeat(n);
 
     const result = nodesArray.map((node) => {
-      const { key, type, status, nodes, oldValue, newValue } = node;
+      const { key, type, status, children, oldValue, newValue } = node;
       const newN = n + 4;
 
       switch (status) {
         case 'added':
           return type === 'node'
-            ? [`${indent}+ ${key}: `, iter(nodes, newN), '\n']
+            ? [`${indent}+ ${key}: `, iter(children, newN), '\n']
             : `${indent}+ ${key}: ${newValue}\n`;
         case 'deleted':
           return type === 'node'
-            ? [`${indent}- ${key}: `, iter(nodes, newN), '\n']
+            ? [`${indent}- ${key}: `, iter(children, newN), '\n']
             : `${indent}- ${key}: ${oldValue}\n`;
         case 'updated':
           return `${indent}+ ${key}: ${newValue}\n${indent}- ${key}: ${oldValue}\n`;
         default:
           return type === 'node'
-            ? [`${indent}  ${key}: `, iter(nodes, newN), '\n']
+            ? [`${indent}  ${key}: `, iter(children, newN), '\n']
             : `${indent}  ${key}: ${oldValue}\n`;
       }
     });
@@ -35,7 +35,7 @@ const createNormalOutput = (ast) => {
 const createPlainOutput = (ast) => {
   const iter = (nodesArray, parent) => {
     const resultArray = nodesArray.map((node) => {
-      const { key, type, status, nodes, oldValue, newValue } = node;
+      const { key, type, status, children, oldValue, newValue } = node;
       switch (status) {
         case 'added':
           return type === 'node'
@@ -47,7 +47,7 @@ const createPlainOutput = (ast) => {
           return `Property '${parent}${key}' was updated. From '${oldValue}' to '${newValue}'\n`;
         default:
           return type === 'node'
-            ? iter(nodes, `${parent}${key}.`)
+            ? iter(children, `${parent}${key}.`)
             : '';
       }
     });

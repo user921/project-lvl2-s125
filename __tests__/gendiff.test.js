@@ -66,7 +66,7 @@ const jsonOutput =
     "key": "common",
     "type": "node",
     "status": "unchanged",
-    "nodes": [
+    "children": [
       {
         "key": "setting1",
         "type": "leaf",
@@ -89,7 +89,7 @@ const jsonOutput =
         "key": "setting6",
         "type": "node",
         "status": "deleted",
-        "nodes": [
+        "children": [
           {
             "key": "key",
             "type": "leaf",
@@ -108,7 +108,7 @@ const jsonOutput =
         "key": "setting5",
         "type": "node",
         "status": "added",
-        "nodes": [
+        "children": [
           {
             "key": "key5",
             "type": "leaf",
@@ -123,7 +123,7 @@ const jsonOutput =
     "key": "group1",
     "type": "node",
     "status": "unchanged",
-    "nodes": [
+    "children": [
       {
         "key": "baz",
         "type": "leaf",
@@ -143,7 +143,7 @@ const jsonOutput =
     "key": "group2",
     "type": "node",
     "status": "deleted",
-    "nodes": [
+    "children": [
       {
         "key": "abc",
         "type": "leaf",
@@ -156,7 +156,7 @@ const jsonOutput =
     "key": "group3",
     "type": "node",
     "status": "added",
-    "nodes": [
+    "children": [
       {
         "key": "fee",
         "type": "leaf",
